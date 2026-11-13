@@ -1,0 +1,86 @@
+// =====================================================================
+// Project 1: Online Store Sales Analysis
+// Power BI measures (DAX). All live in a dedicated "_Measures" table.
+// Expected values (whole dataset, no filters) are noted under each one.
+// =====================================================================
+
+
+// ---------- Core sales ----------
+
+Revenue = SUM ( Sales[revenue] )
+// £19,398,208.42
+
+Orders = DISTINCTCOUNT ( Sales[invoice] )
+// 39,514
+
+Avg Order Value = DIVIDE ( [Revenue], [Orders] )
+// £490.92
+
+Customers = DISTINCTCOUNTNOBLANK ( Sales[customer_id] )
+// 5,852  (NOBLANK: the blank customer IDs must not count as a "customer")
+
+Revenue per Customer =
+DIVIDE (
+    CALCULATE ( [Revenue], NOT ISBLANK ( Sales[customer_id] ) ),
+    [Customers]
+)
+// £2,874.73
+
+% of Total Revenue =
+DIVIDE ( [Revenue], CALCULATE ( [Revenue], REMOVEFILTERS () ) )
+// used in product / country / segment visuals
+
+
+// ---------- Year 1 vs Year 2 (full 12-month periods) ----------
+
+Revenue Y1 = CALCULATE ( [Revenue], 'Calendar'[Period] = "Year 1" )
+// £9,396,642.30
+
+Revenue Y2 = CALCULATE ( [Revenue], 'Calendar'[Period] = "Year 2" )
+// £9,555,544.80
+
+Revenue Growth % = DIVIDE ( [Revenue Y2] - [Revenue Y1], [Revenue Y1] )
+// +1.7%
+
+Orders Y1 = CALCULATE ( [Orders], 'Calendar'[Period] = "Year 1" )
+// 19,743
+
+Orders Y2 = CALCULATE ( [Orders], 'Calendar'[Period] = "Year 2" )
+// 18,956
+
+Orders Growth % = DIVIDE ( [Orders Y2] - [Orders Y1], [Orders Y1] )
+// -4.0%
+
+AOV Y1 = DIVIDE ( [Revenue Y1], [Orders Y1] )
+// £475.95
+
+AOV Y2 = DIVIDE ( [Revenue Y2], [Orders Y2] )
+// £504.09
+
+AOV Growth % = DIVIDE ( [AOV Y2] - [AOV Y1], [AOV Y1] )
+// +5.9%
+
+
+// ---------- Cancellations ----------
+
+Cancelled Value = - SUM ( Cancellations[cancelled_value] )
+// £470,809.37  (shown as a positive number)
+
+Cancellation Rate % = DIVIDE ( [Cancelled Value], [Revenue] )
+// 2.43%
+
+Net Revenue = [Revenue] - [Cancelled Value]
+// £18,927,399.05
+
+
+// ---------- Customer segments ----------
+
+Segment Customers = COUNTROWS ( Customers )
+// 5,852
+
+Segment Spend = SUM ( Customers[total_spend] )
+// £16,822,929.52
+
+% of Segment Spend =
+DIVIDE ( [Segment Spend], CALCULATE ( [Segment Spend], REMOVEFILTERS ( Customers ) ) )
+// Champions = 62.5%
