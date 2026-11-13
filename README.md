@@ -6,6 +6,8 @@ Two years of messy transaction data from a UK online gift retailer, turned into 
 
 **Owner report:** [report/monthly_report.pdf](report/monthly_report.pdf)
 
+**Article:** [Read the full story on Medium](https://medium.com/@osazuwa2017blessing/this-online-shop-looked-like-it-was-growing-it-wasnt-00d45fa64a9d?sharedUserId=osazuwa2017blessing)
+
 ![Overview page of the dashboard](images/dashboard_p1_overview.png)
 
 ---
